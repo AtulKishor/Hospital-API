@@ -1,0 +1,305 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "COVID-19 Hospital REST API",
+    "version": "1.0.0",
+    "description": "API documentation for the COVID-19 Hospital system."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local server"
+    }
+  ],
+  "paths": {
+    "/doctors/register": {
+      "post": {
+        "summary": "Register a new Doctor",
+        "operationId": "registerDoctor",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Doctor"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Doctor registered successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/doctors/login": {
+      "post": {
+        "summary": "Log in as a Doctor",
+        "operationId": "loginDoctor",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Doctor logged in successfully"
+          },
+          "400": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/doctors/logout": {
+      "get": {
+        "summary": "Log out as a Doctor",
+        "operationId": "logoutDoctor",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Doctor logged out successfully"
+          }
+        }
+      }
+    },
+    "/patients/register": {
+      "post": {
+        "summary": "Register a new Patient",
+        "operationId": "registerPatient",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Patient"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Patient registered successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/patients/{id}/create_report": {
+      "post": {
+        "summary": "Create a Patient Report",
+        "operationId": "createPatientReport",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Report"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Report created successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/patients/{id}/all_reports": {
+      "get": {
+        "summary": "Get all Reports for a Patient",
+        "operationId": "getAllReports",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reports retrieved successfully"
+          },
+          "404": {
+            "description": "Patient not found"
+          }
+        }
+      }
+    },
+    "/reports/{status}": {
+      "get": {
+        "summary": "Get Reports by Status",
+        "operationId": "getReportsByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reports retrieved successfully"
+          },
+          "404": {
+            "description": "No reports found for the given status"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Doctor": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 25,
+            "example": "Dr. John Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "johndoe@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          },
+          "gender": {
+            "type": "string",
+            "example": "male"
+          },
+          "patients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "objectId"
+            }
+          }
+        },
+        "required": ["name", "email", "password", "gender"]
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "johndoe@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "Patient": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "phone": {
+            "type": "number",
+            "example": 1234567890
+          },
+          "city": {
+            "type": "string",
+            "example": "New York"
+          },
+          "aadharNumber": {
+            "type": "number",
+            "example": 123412341234
+          },
+          "reports": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "objectId"
+            }
+          }
+        },
+        "required": ["name", "phone", "city", "aadharNumber"]
+      },
+      "Report": {
+        "type": "object",
+        "properties": {
+          "createdBy": {
+            "type": "string",
+            "format": "objectId"
+          },
+          "patient": {
+            "type": "string",
+            "format": "objectId"
+          },
+          "patientAadharNumber": {
+            "type": "number",
+            "example": 123412341234
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Negative", "Travelled-Quarantine", "Symptoms-Quarantine", "Positive-Admit"]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-06-21T14:30:00Z"
+          }
+        },
+        "required": ["createdBy", "patient", "status"]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
