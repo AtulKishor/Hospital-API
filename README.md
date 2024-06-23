@@ -34,8 +34,8 @@ This API is designed for doctors at a hospital allocated by the government for t
 ## Setup and Installation
 1. **Clone the repository**
     ```bash
-    git clone <repository-url>
-    cd <repository-directory>
+    git clone https://github.com/AtulKishor/Hospital-API.git
+    cd Hospital-API
     ```
 
 2. **Install dependencies**
